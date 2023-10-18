@@ -1,5 +1,6 @@
 import GitLogo from "../assets/github-logo.png";
 import ShipIcon from "../assets/battleship-icon.png"
+import PunteroImpacto from "../assets/puntero.png";
 
 function cargarImagenes(){
     const logoGithub = document.querySelector("#logo-github");
@@ -11,68 +12,46 @@ function cargarImagenes(){
     logoBattleship2.src = ShipIcon;
 }
 
-let puedeColocar = true;
-let contBarcos = 0;
-function cargarTableros(tablero) {
-    const tableroJugador = document.querySelector(".tablero-jugador");
-  
-    for (let i = 0; i < 8; i++) {
-      for (let j = 0; j < 8; j++) {
-        const celda = document.createElement("div");
-        celda.classList.add("celda");
-        celda.dataset.fila = i;
-        celda.dataset.columna = j;
-        celda.textContent = "□";
-  
-        celda.addEventListener("click", function (e) {
-            eventoClick(tablero, e);
-        });
-
-        tableroJugador.appendChild(celda);
-      }
+function cambiarCursores(){
+  const celdas = document.querySelectorAll(".celda");
+  celdas.forEach(celda => {
+    if(celda.parentElement.classList.value === "tablero-jugador"){
+      celda.style.cursor = "not-allowed";
     }
-  }
-
-  function eventoClick(tablero, e){
-    const barcos = ["acorazado", "destructor", "submarino", "patrullero"];
-    const tamBarco = obtenerTamañoBarco(barcos[contBarcos]);
-    const fila = parseInt(e.target.dataset.fila);
-    const columna = parseInt(e.target.dataset.columna);
-  
-    console.log(fila + " " + columna);
-    
-    //fase de colocacion de barcos
-    if(puedeColocar){
-        tablero.colocarBarcos([fila, columna], barcos[contBarcos]);
-        for (let i = 0; i < tamBarco; i++) {
-            
-            const celda = document.querySelector(
-              `[data-fila="${fila}"][data-columna="${columna + i}"]`
-            );
-            celda.textContent = "X";
-          }
-    
-          contBarcos++;
-          tablero.mostrarTablero();
-        if(contBarcos >= 4){
-            puedeColocar = false;
-        }
-    }
-  }
-
-  function obtenerTamañoBarco(nombreBarco) {
-  switch (nombreBarco) {
-    case "acorazado":
-      return 4;
-    case "destructor":
-      return 4;
-    case "submarino":
-      return 3;
-    case "patrullero":
-      return 2;
-    default:
-      return 0; // Valor por defecto en caso de que el nombre del barco no sea válido
-  }
+    celda.style.cursor = "cursor";
+  }); 
 }
 
-export {cargarImagenes, cargarTableros};
+
+function cargarTableros(tablero) {
+    document.querySelector("#info-partida").textContent = "Coloca tu acorazado";
+    const tableroJugador = document.querySelector(".tablero-jugador");
+    const tableroCpu = document.querySelector(".tablero-cpu");
+
+    if(tablero.jugador){
+      for (let i = 0; i < 8; i++) {
+        for (let j = 0; j < 8; j++) {
+          const celda = document.createElement("div");
+          celda.classList.add("celda");
+          celda.dataset.fila = i;
+          celda.dataset.columna = j;
+          tableroJugador.appendChild(celda);
+        }
+      }
+    }
+
+    if(!tablero.jugador){
+      for (let i = 0; i < 8; i++) {
+        for (let j = 0; j < 8; j++) {
+          const celda = document.createElement("div");
+          celda.classList.add("celda");
+          celda.dataset.fila = i;
+          celda.dataset.columna = j;
+          tableroCpu.appendChild(celda);
+        }
+      }
+    }
+    
+  }
+
+export {cargarImagenes, cargarTableros, cambiarCursores};

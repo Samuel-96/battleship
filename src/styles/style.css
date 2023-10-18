@@ -34,6 +34,10 @@ nav img{
   height: 50px;
 }
 
+#info-partida{
+  text-transform: uppercase;
+}
+
 .container-info-partida{
   padding: 0.5em;
   margin: 0 auto;
@@ -52,7 +56,6 @@ nav img{
 .container-tableros{
   margin: 20px;
   padding: 1em;
-  background-color: rgb(97, 114, 129);
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
@@ -62,21 +65,34 @@ nav img{
 }
 
 .tablero-jugador, .tablero-cpu{
-  background-color: rgb(146, 101, 101);
-  width: 500px;
+  background-color: rgb(196, 196, 196);
+  width: auto;
   display: grid;
   grid-template-columns: repeat(8,1fr);
   grid-template-rows: repeat(8,1fr);
   font-size: 30px;
   margin: 0;
   padding: 0;
+  border: 2px solid rgba(255, 228, 106, 0.767);
+  border-radius: 8px;
 }
 
 .celda{
   padding: 0.5em;
-  border: 1px solid blue;
-
+  border: 1px solid rgb(20, 20, 20);
+  text-align: center;
   height: fit-content;
+  width: 30px;
+  height: 30px;
+  border-radius: 5px;
+}
+
+.celda:hover{
+  background-color: antiquewhite;
+}
+
+.tablero-cpu .celda{
+  /*color: transparent;*/
 }
 
 footer{
@@ -101,3 +117,13 @@ footer img{
   height: 25px;
   cursor: pointer;
 }  
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+}

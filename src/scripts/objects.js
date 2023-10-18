@@ -20,10 +20,11 @@ class Barco
 }
 class Tablero
 {
-    constructor()
+    constructor(jugador)
     {
         this.tablero = this.crearTablero();
         this.coleccionBarcos = [];
+        this.jugador = jugador;
     }
 
     crearTablero(){
@@ -116,7 +117,7 @@ class Tablero
                 if (coordenada[0] === coordenadas[0] && coordenada[1] === coordenadas[1]) {
                     barco.hit();
                     if(barco.estaHundido){
-                        //console.log("hundido el " + barco.nombre)
+                        console.log("hundido el " + barco.nombre)
                         this.coleccionBarcos.splice(index, 1);
                     }
                     this.tablero[coordenadas[0]][coordenadas[1]] = "X";
@@ -129,6 +130,13 @@ class Tablero
         if (!barcoImpactado) {
             this.tablero[coordenadas[0]][coordenadas[1]] = "f"; // No hay barco, es "agua"
         }
+    }
+
+    comprobarCelda(fila,columna){
+        if(this.tablero[fila][columna] === "🚢"){
+            console.log(fila + " " + columna + " está ocupada");
+            return false;
+        } else {return true;}
     }
 }
 
