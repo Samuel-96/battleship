@@ -1,4 +1,8 @@
-import { cambiarCursores } from "./cargarRecursos";
+import { activarOverlay, activarCursorCpu, desactivarCursor } from "./cargarRecursos";
+import Water from "../assets/water.png"
+
+let puedeAtacarJugador = true;
+const infoColocacion = document.querySelector("#info-partida");
 
 function eventosCeldas(tableroJugador, tableroCpu){
     
@@ -14,7 +18,24 @@ function eventosCeldas(tableroJugador, tableroCpu){
             //si no ponemos el evento de atacar al tablero rival
             else {
                 celda.addEventListener("click", function (e) {
-                    atacarCpu(tableroCpu, e);
+
+                    atacarCpu(tableroCpu, e); //ataco a la cpu                  
+                    if(puedeAtacarJugador)
+                    {
+                        if(tableroCpu.barcosEliminados() || tableroJugador.barcosEliminados())
+                        {
+                            infoColocacion.textContent = "FIN DE PARTIDA"
+                            return;
+                        }
+                        atacarJugador(tableroJugador); //nos atacaan
+                    }
+
+                    if(tableroCpu.barcosEliminados() || tableroJugador.barcosEliminados())
+                    {
+                        infoColocacion.textContent = "FIN DE PARTIDA"
+                        return;
+                    }
+                    
                 });
             }
             
@@ -40,39 +61,47 @@ function eventoColocarBarcos(tablero, e){
         //comprobamos la celda
         if(tablero.comprobarCelda(fila,columna))
         {
-            //colocamos el barco en tantas casillas como longitud tenga el barco
-            tablero.colocarBarcos([fila, columna], barcos[contBarcos]);
-            for (let i = 0; i < tamBarco; i++) {
-                
-                const celda = document.querySelector(
-                    `[data-fila="${fila}"][data-columna="${columna + i}"]`
-                );
-                //comprobamos los limites de columnas, si se ha pasado es que no ha colocado
-                if(columna >= limites[contBarcos]){
-                    haColocado = false;
+            if(tablero.comprobarCelda(fila,columna+3))
+            {
+                //colocamos el barco en tantas casillas como longitud tenga el barco
+                tablero.colocarBarcos([fila, columna], barcos[contBarcos]);
+                for (let i = 0; i < tamBarco; i++) {
                     
-                } 
-                //si ha colocado el barco 
-                else {
-                    infoColocacion.textContent = "Coloca tu " + barcos[contBarcos+1];
-                    haColocado = true;
-                    celda.textContent = "X";
+                    const celda = document.querySelector(
+                        `[data-fila="${fila}"][data-columna="${columna + i}"]`
+                    );
+                    //comprobamos los limites de columnas, si se ha pasado es que no ha colocado
+                    if(columna >= limites[contBarcos]){
+                        infoColocacion.textContent = "No se puede colocar ahí, inténtalo de nuevo "
+                        haColocado = false;
+                        
+                    } 
+                    //si ha colocado el barco 
+                    else {
+                        infoColocacion.textContent = "Coloca tu " + barcos[contBarcos+1];
+                        haColocado = true;
+                        celda.textContent = "X";
+                    }
+                    
                 }
-                
-            }
 
-            if(haColocado){
-                contBarcos++;
-            }
-                
+                if(haColocado){
+                    contBarcos++;
+                }
+                    
 
-            if(contBarcos >= 4){
-                puedeColocar = false;
-                infoColocacion.textContent = "Comienza la batalla";
-                cambiarCursores();
-                return true;
-            }
+                if(contBarcos >= 4){
+                    puedeColocar = false;
+                    infoColocacion.textContent = "Comienza la batalla";
+                    setTimeout(() => {
+                        infoColocacion.textContent = "Turno del jugador";
 
+                    }, "1000");                  
+                    activarOverlay();
+                    activarCursorCpu();
+                    return true;
+                }
+            }
         }
         
     } 
@@ -97,7 +126,6 @@ function colocarBarcosCpu(tablero){
 
                 fila = fila.toString();
                 columna = columna.toString();
-
                 
                 //tablero.mostrarTablero();
 
@@ -147,9 +175,7 @@ function colocarBarcosCpu(tablero){
                 //tablero.mostrarTablero();
 
                 for (let i = 0; i < tam; i++) {
-        
                     const celda = tableroCpu.querySelector(`[data-fila="${fila}"][data-columna="${columna}"]`);
-                    
                     celda.textContent = "X"
                     columna++;
                 }                    
@@ -169,9 +195,7 @@ function colocarBarcosCpu(tablero){
                 //tablero.mostrarTablero();
 
                 for (let i = 0; i < tam; i++) {
-        
                     const celda = tableroCpu.querySelector(`[data-fila="${fila}"][data-columna="${columna}"]`);
-                    
                     celda.textContent = "X"
                     columna++;
                 }
@@ -201,33 +225,71 @@ function obtenerTamañoBarco(nombreBarco) {
 let coordenadasAtacadas = [];
 let celdaAtacada = false;
 function atacarCpu(tablero, e){
+    activarCursorCpu();
     const fila = parseInt(e.target.dataset.fila);
     const columna = parseInt(e.target.dataset.columna);
+    const infoPartida = document.querySelector("#info-partida");
     
     const tableroCpu = document.querySelector(".tablero-cpu");
     const celda = tableroCpu.querySelector(`[data-fila="${fila}"][data-columna="${columna}"]`);
 
+    let celdaAtacada = false;
     coordenadasAtacadas.forEach(coordenada => {
         if(coordenada[0] === fila && coordenada[1] === columna){
-            console.log("ya has atacado ahi");
             celdaAtacada = true;
-            return;
-        } else {
-            celdaAtacada = false;
+            puedeAtacarJugador = false;
         }
     })
 
     if(!celdaAtacada)
     {
         if(!tablero.comprobarCelda(fila,columna)){
-            console.log("tocado")
-            //realizar ataque
             tablero.recibirAtaque([fila,columna]);
+            infoPartida.textContent = "Posición [" + fila + "," + columna + "] atacada" + ". Barco tocado";
+            celda.style.backgroundColor = "#db4c1a";
+            
+        } else {
+            celda.style.background = "#1aabdb"
+            infoPartida.textContent = "Posición [" + fila + "," + columna + "] atacada" + ". FALLO";
         }
+        
+        puedeAtacarJugador = true;
+        desactivarCursor();
         coordenadasAtacadas.push([fila,columna])
     }
-    
-    console.log(coordenadasAtacadas)
 }
+
+let coordenadasAtacadasJugador = [];
+
+function atacarJugador(tablero) {
+    const infoPartida = document.querySelector("#info-partida");
+    infoPartida.textContent = "ATACANDO AL JUGADOR"
+    
+    let fila, columna;
+
+    do {
+        fila = Math.floor(Math.random() * 8);
+        columna = Math.floor(Math.random() * 8);
+    } while (coordenadasAtacadasJugador.some(coordenada => coordenada[0] === fila && coordenada[1] === columna));
+
+    coordenadasAtacadasJugador.push([fila, columna]);
+
+    const tableroJugador = document.querySelector(".tablero-jugador");
+    const celda = tableroJugador.querySelector(`[data-fila="${fila}"][data-columna="${columna}"]`);
+
+    setTimeout(() => {
+        if (!tablero.comprobarCelda(fila, columna)) {
+            tablero.recibirAtaque([fila, columna]);
+            celda.style.backgroundColor = "#db4c1a";
+        } else {
+            celda.style.background = "#1aabdb";
+        }
+
+        activarCursorCpu();
+        infoPartida.textContent = "TURNO DEL JUGADOR"
+    }, 1600); // Retraso de 2 segundos (2000 milisegundos)
+    
+}
+
 
   export {eventosCeldas, colocarBarcosCpu};

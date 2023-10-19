@@ -12,17 +12,6 @@ function cargarImagenes(){
     logoBattleship2.src = ShipIcon;
 }
 
-function cambiarCursores(){
-  const celdas = document.querySelectorAll(".celda");
-  celdas.forEach(celda => {
-    if(celda.parentElement.classList.value === "tablero-jugador"){
-      celda.style.cursor = "not-allowed";
-    }
-    celda.style.cursor = "cursor";
-  }); 
-}
-
-
 function cargarTableros(tablero) {
     document.querySelector("#info-partida").textContent = "Coloca tu acorazado";
     const tableroJugador = document.querySelector(".tablero-jugador");
@@ -54,4 +43,28 @@ function cargarTableros(tablero) {
     
   }
 
-export {cargarImagenes, cargarTableros, cambiarCursores};
+  function activarCursorCpu(){
+    const tableroCpu = document.querySelector(".tablero-cpu");
+    tableroCpu.style.pointerEvents = "auto";
+    tableroCpu.style.cursor = "pointer"
+  }
+
+  function desactivarCursor(){
+    const tableroCpu = document.querySelector(".tablero-cpu");
+    tableroCpu.style.pointerEvents = "none";
+    tableroCpu.style.cursor = "not-allowed"
+  }
+
+  function activarOverlay()
+  {
+    const tableroJugador = document.querySelector(".tablero-jugador");
+    tableroJugador.classList.add("overlay-activado");
+  }
+
+  function desactivarOverlay()
+  {
+    const tableroJugador = document.querySelector(".tablero-jugador");
+    tableroJugador.classList.remove("overlay-activado");
+  }
+
+export {cargarImagenes, cargarTableros, activarOverlay, desactivarOverlay, activarCursorCpu, desactivarCursor};

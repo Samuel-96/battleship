@@ -27,6 +27,13 @@ class Tablero
         this.jugador = jugador;
     }
 
+    barcosEliminados(){
+        if(this.coleccionBarcos.length === 0)
+        {
+            return true;
+        } 
+    }
+
     crearTablero(){
         const tablero = 
         [
@@ -109,7 +116,7 @@ class Tablero
     }
     
     recibirAtaque(coordenadas){
-        console.log(coordenadas);
+        //console.log(coordenadas);
         let barcoImpactado = false;
     
         this.coleccionBarcos.forEach((barco, index) => {
@@ -122,7 +129,6 @@ class Tablero
                     }
                     this.tablero[coordenadas[0]][coordenadas[1]] = "X";
                     barcoImpactado = true;
-                    console.log(barco.numImpactos);
                 }
             });
         });
@@ -134,7 +140,6 @@ class Tablero
 
     comprobarCelda(fila,columna){
         if(this.tablero[fila][columna] === "🚢"){
-            console.log(fila + " " + columna + " está ocupada");
             return false;
         } else {return true;}
     }
