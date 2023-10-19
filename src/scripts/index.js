@@ -1,5 +1,5 @@
 import "../styles/style.css";
-import {cambiarCursores, cargarImagenes, cargarTableros} from "./cargarRecursos.js";
+import {cargarImagenes, cargarTableros} from "./cargarRecursos.js";
 import { Tablero } from "./objects";
 import { colocarBarcosCpu, eventosCeldas } from "./eventosDOM";
 

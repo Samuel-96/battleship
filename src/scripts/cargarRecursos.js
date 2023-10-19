@@ -10,6 +10,11 @@ function cargarImagenes(){
     const logoBattleship2 = document.querySelector("#battleship-logo2");
     logoBattleship1.src = ShipIcon;
     logoBattleship2.src = ShipIcon;
+
+    const botonReinicio = document.querySelector("#reiniciar");
+    botonReinicio.addEventListener("click", () => {
+      location.reload();
+    })
 }
 
 function cargarTableros(tablero) {
@@ -55,16 +60,17 @@ function cargarTableros(tablero) {
     tableroCpu.style.cursor = "not-allowed"
   }
 
-  function activarOverlay()
+  function activarOverlay(tablero)
   {
-    const tableroJugador = document.querySelector(".tablero-jugador");
-    tableroJugador.classList.add("overlay-activado");
+    //const tableroJugador = document.querySelector(".tablero-jugador");
+    tablero.classList.add("overlay-activado");
   }
 
-  function desactivarOverlay()
+  function desactivarOverlay(tablero)
   {
-    const tableroJugador = document.querySelector(".tablero-jugador");
-    tableroJugador.classList.remove("overlay-activado");
+    //const tableroJugador = document.querySelector(".tablero-jugador");
+    tablero.classList.remove("overlay-activado");
   }
+
 
 export {cargarImagenes, cargarTableros, activarOverlay, desactivarOverlay, activarCursorCpu, desactivarCursor};
